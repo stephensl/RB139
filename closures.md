@@ -301,3 +301,124 @@ In this code the `sequence` method returns a `Proc` object that forms a closure 
 ### We can create multiple `Proc`s from `sequence` and each will have its own independent copy of `counter`. 
 
 ---
+
+## Blocks and Variable Scope 
+
+In order for a chunk of code to be executed later, it must understand the surrounding context from where it was defined. In Ruby, this "chunk" of code or closure is represented by a `Proc` object, a `lambda` or a block. 
+
+```ruby 
+name = "Robert" 
+chunk = Proc.new { puts "hi #{name}"}
+
+def call_me(some_code)
+  some_code.call
+end 
+
+call_me(chunk)
+
+# hi Robert 
+# => nil 
+```
+The `Proc` object identified by `some_code` knew how to handle `puts #{name}` and specifically the `name` variable. 
+
+`name` was initialized outside of the method definition, yet is still available via closure. 
+
+```ruby 
+def call_me(some_code)
+  some_code.call
+end
+
+name = "Robert"
+chunk_of_code = Proc.new {puts "hi #{name}"}
+name = "Griffin III"        # re-assign name after Proc initialization
+
+call_me(chunk_of_code)
+
+# hi Griffin III
+# => nil
+```
+
+### The `Proc` is aware of the new value even though the variable was reassigned after the `Proc` was defined. 
+  - The `Proc` keeps track of its context and drags it around wherever the chunk of code is passed. 
+  - A closure must keep track of its binding to have all the information it needs to be executed later. 
+    - This context includes: 
+      - local variables 
+      - method references 
+      - constants
+      - other artifacts
+
+### Any local variables that need to be accessed by the closure must be defined before the closure is created unless the local variable is explicitly passed to the closure when called. 
+
+---
+---
+
+## Symbol to `proc` 
+
+```ruby 
+[1, 2, 3, 4, 5].map do |num|
+  num.to_s
+end
+
+# => ["1", "2", "3", "4", "5"]
+```
+The above code can be written utilizing a shortcut: 
+```ruby 
+[1, 2, 3, 4, 5].map(&:to_s)
+
+# => ["1", "2", "3", "4", "5"]
+```
+
+This shortcut will work with any collection method that takes a block, not only on map. For example:
+
+```ruby 
+["hello", "world"].each(&:upcase!)              # => ["HELLO", "WORLD"]
+[1, 2, 3, 4, 5].select(&:odd?)                  # => [1, 3, 5]
+[1, 2, 3, 4, 5].select(&:odd?).any?(&:even?)    # => false
+```
+
+### `Symbol#to_proc` 
+This code: 
+`(&:to_s)` 
+
+...gets converted to this code: 
+
+`{ |n| n.to_s }` 
+
+What is the mechanism at work here?
+  - Although its related to the use of `&` with explicit blocks, this is different as we are not working with explicit blocks here
+    - Explicit blocks are identified by an `&` in the parameter list for a method. 
+  
+1. We are applying the `&` operator to an object, and when this occurs, Ruby tries to convert the object to a block. 
+2. If the object is already a `Proc`, Ruby can do this naturally. 
+3. If the object is not a `Proc`, we must first convert it to a `Proc` 
+4. We call `#to_proc` on the object, which returns a `Proc`
+5. Ruby can then convert the resulting `Proc` into a block. 
+
+In the code example above: 
+  - `&:to_s` tells Ruby to convert the `Symbol` `:to_s` to a block. 
+  - Since `:to_s` is not a `Proc`, Ruby first calls `Symbol#to_proc` to convert the `Symbol` to a `Proc`. 
+  - Now it is a `Proc`, Ruby then converts this `Proc` to a block. 
+
+### More examples: 
+```ruby 
+def my_method 
+  yield(2)
+end 
+
+# turns symbol into Proc, then & turns Proc into a block.
+my_method(&:to_s)   # => "2"
+```
+
+The following code breaks up the first two steps: 
+```ruby 
+def my_method 
+  yield(2)
+end 
+
+a_proc = :to_s.to_proc  # explicitly call to_proc on symbol
+my_method(&a_proc)      # convert Proc into block, then pass block in
+
+# => "2"
+```
+---
+---
