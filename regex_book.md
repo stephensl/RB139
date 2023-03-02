@@ -305,4 +305,527 @@ Answer: `/[A-WYZa-wyz]/`
 THE quick BROWN fox JUMPS over THE lazy DOG!
 ```
 
-Answer: `/[^a-zA-Z]/`
+Answer: `/[^a-zA-Z]/` or `/^a-z/i` 
+
+6. Are `/(ABC|abc)/` and `/[Aa][Bb][Cc]/` equivalent regex? If not, how do they differ? Can you provide an example of a string that would match one of these regex, but not the other?
+
+Answer: 
+
+`/(ABC|abc)/` will match any sequence of "abc" whether capital or lowercase 
+
+  - will match "abcdef" or "ABCD" or "flabcars"
+  - will not match "aBc" or "ABc" or "ab" 
+  - we are not using character classes here, but alternation with concatenation
+
+`/[Aa][Bb][Cc]/` will match any combination of "abc" regardless of case
+
+  - will match "Abc" or "abC" or "aBC" 
+  - will not match "flabec"
+  - we are using character classes and concatenation. 
+
+
+7. Are `/abc/i` and `/[Aa][Bb][Cc]/` equivalent regex? If not, how do they differ? Can you provide an example of a string that would match one of these regex, but not the other?
+
+
+Answer: 
+
+`/abc/i` will match any pattern of "abc" case insensitive 
+
+`/[Aa][Bb][Cc]/` is equivalent. 
+
+8. Challenge: write a regex that matches a string that looks like a simple negated character class range, e.g., '[^a-z]'. (Your answer should match precisely six characters. The match does not include the slash characters.) Test it with these strings:
+
+```
+The regex /[^a-z]/i matches any character that is
+not a letter. Similarly, /[^0-9]/ matches any
+non-digit while /[^A-Z]/ matches any character
+that is not an uppercase letter. Beware: /[^+-<]/
+is at best obscure, and may even be wrong.
+```
+
+Answer: 
+
+/\[\^[a-zA-Z0-9]-[a-zA-Z0-9]\]/
+
+The three matches are `[^a-z]`, `[^0-9]`, and `[^A-Z]`. Technically, the last regex string in our sample text, `[^+-<]`, is a valid regex; there is nothing illegal about character class ranges that don't use alphanumeric starting and ending points. However, you should avoid such ranges; think of them as invalid.
+
+---
+---
+---
+---
+
+# Character Class Shortcuts 
+
+Shortcuts for commonly used character classes. 
+
+## Any Character 
+
+- The most commonly used. 
+- matches any character 
+  - alphanumeric
+  - punctuation 
+  - whitespace 
+  - control character 
+  - etc...
+
+Uses the period (`.`) meta character.  
+  - Should not be inside square brackets unless its a literal `.` 
+
+
+## Whitespace 
+
+- `/\s/` matches whitespace characters 
+  - equivalent to `/[ \t\v\r\n\f]/` 
+  - space `' '` 
+  - tab `\t`
+  - vertical tab `\v`
+  - carriage return `\r`
+  - line feed `\n` 
+  - form feed `\f` 
+
+- `/\S/` matches non-whitespace characters 
+  - equivalent to `/[^ \t\v\r\n\f]/`
+
+Example: 
+
+```ruby 
+puts 'matched 1' if 'Four score'.match(/\s/)
+puts 'matched 2' if "Four\tscore".match(/\s/)
+puts 'matched 3' if "Four-score\n".match(/\s/)
+puts 'matched 4' if "Four-score".match(/\s/)
+```
+
+The first three examples in each group all print a matched message because the given string contains a whitespace character; the last in each group outputs nothing since "Four-score" doesn't include whitespace.
+
+
+```ruby 
+puts 'matched 1' if 'a b'.match(/\S/)
+puts 'matched 2' if " \t\n\r\f\v".match(/\S/)
+```
+
+prints matched 1 since /\S/ matches each of the letters in 'a b', but does not print anything for the second match since all of the characters in the string are whitespace characters.
+
+You can use `\s` and `\S` both in and out of square brackets. Outside square brackets, e.g., `/\s/`, it stands for one of the whitespace characters. Inside square brackets, e.g., `/[a-z\s]/`, they represent an alternative to the other members of the class. Here, for instance, it represents any lowercase alphabetic character or any whitespace character.
+
+- This matches any lower case letter "a-z" immediately before a whitespace character.
+  - `/[a-z]\s` 
+- This matches any lower case letter "a-z" NOT immediately before a whitespace character
+  - `/[a-z]\S` 
+
+---
+---
+
+## Digits and Hex Digits 
+
+Decimal Digits 
+  - 0-9 
+
+Hexadecimal Digits 
+  - 0-9 
+  - A-F
+  - a-f 
+
+Shortcuts 
+  - `\d` matches any decimal digit (0-9)
+  - `\D` any character except a decimal digit 
+  - `\h` any hexadecimal digit (0-9, A-F, a-f) (Ruby)
+  - `\H` any non-hex digit (Ruby)
+
+
+---
+---
+
+## Word Characters 
+
+Match word characters: `/\w/` 
+  - including: 
+    - All alphabetic characters 
+    - All decimal digits 
+    - An underscore (`_`)
+
+Matches all non-word characters 
+  - `/\W/`
+
+Can be used in or outside of square brackets. 
+
+---
+---
+
+## Exercises 
+
+1. Write a regex that matches any sequence of three characters delimited by whitespace characters (the regex should match both the delimiting whitespace and the sequence of 3 characters). Test it with these strings:
+
+```
+reds and blues
+the lazy cat sleeps
+```
+
+Answer: `/\s...\s/`
+
+This matches pattern: whitespace, three characters, whitespace 
+
+
+2. Test the pattern /\s...\s/ from the previous exercise against this text:
+
+```
+Doc in a big red box.
+Hup! 2 3 4
+```
+Observe that one of the three-letter words in this text match the pattern; it also matches 2 3. Why is it that this pattern doesn't include the three-letter words Doc, red, box, or Hup, but it does match 2 3?
+
+
+Answer: 
+Note that in all of these cases, the "match" is five characters long:
+  - Doc doesn't match since Doc doesn't follow any whitespace. 
+  - big matches since it is three characters with both leading and trailing whitespace. 
+  - red doesn't match since the regex engine consumes the space character that precedes red when it matches big (note the trailing space). Once consumed as part of a match, the character is no longer available for subsequent matches. 
+  - box doesn't match since a period follows it. 
+  - Hup doesn't match since an exclamation point follows it. 
+  - 2 3 matches since 2 3 is three characters long and it has both leading and trailing whitespace. space 2 space 3 space == 5 character pattern
+
+  ## The big point here is: 
+  the regex engine consumes the space character that precedes red when it matches big (note the trailing space). Once consumed as part of a match, the character is no longer available for subsequent matches. 
+
+
+3. Write a regex that matches any four digit hexadecimal number that is both preceded and followed by whitespace. Note that 0x1234 is not a hexadecimal number in this exercise: there is no space before the number 1234.
+
+```
+Hello 4567 bye CDEF - cdef
+0x1234 0x5678 0xABCD
+1F8A done
+```
+
+Answer: 
+
+`/\s\h\h\h\h\s/` 
+
+The matches are 4567, CDEF, cdef, and 1F8A
+
+
+4. Write a regex that matches any sequence of three letters. Test it with these strings:
+
+```
+The red d0g chases the b1ack cat.
+a_b c_d
+```
+
+Answer: 
+
+`/[a-z][a-z][a-z]/i`
+
+---
+---
+---
+---
+
+# Anchors 
+
+Anchors provide a way to limit how a regex matches a particular string by telling the regex engine where matches can begin and where they can end.
+
+
+## Start or End of line 
+
+- The `^` is an anchor that fix a regex match to the beginning of a line of text. 
+- The `$` is an anchor that fix a regex match to the end of a line of text. 
+
+Examples: 
+
+The regex `/^cat/` matches the "cat" characters in the first two words of this text: 
+
+```
+cat
+catastrophe
+wildcat
+I love my cat
+<cat>
+```
+
+Matches `cat` on line 1 and `cat` in `catastrophe` on line 2. 
+
+The `^` forces the pattern to match the beginning of each line.
+
+
+The regex `/cat$/` matches: 
+
+`cat` on line 1
+`cat` as end of `wildcat` on line 3
+`cat` at end of line 4. 
+
+
+The two can be combined to `^cat$` 
+
+Matches `cat` on line 1 only. Begins and ends with same pattern. 
+
+
+## Lines vs Strings
+
+The subtlety in `^` and `$` arises when the string you are attempting to match contains one or more newline characters that are not the last character in the string. 
+
+Example: 
+
+```ruby 
+TEXT1 = "red fish\nblue fish"
+puts "matched red" if TEXT1.match(/^red/)
+puts "matched blue" if TEXT1.match(/^blue/)
+```
+Both `matched red` and `matched blue` since **`^` anchors the regex to the beginning of each line in the string, not the beginning of the string**.
+
+```ruby 
+TEXT2 = "red fish\nred shirt"
+puts "matched fish" if TEXT2.match(/fish$/)
+puts "matched shirt" if TEXT2.match(/shirt$/)
+```
+As before, we get a match for both regex. Note in particular that even though the first line in the string ends with a \n, fish is still said to occur at the end of the line. $ doesn't care if there is a \n character at the end, provided there is no more than one.
+
+
+
+## Start/End of String 
+
+More often you must match at the beginning or end of a string, not the line. 
+
+These matches use: 
+
+  - `\A` : matches the beginning of the string
+  - `\Z` : matches up to, but not including the newline at end of string
+  - `\z` : always matches end of string. 
+
+Use `\z` unless determine to need `\Z`. 
+
+Example: 
+
+```ruby 
+TEXT3 = "red fish\nblue fish"
+TEXT4 = "red fish\nred shirt"
+puts "matched red" if TEXT3.match(/\Ared/)
+puts "matched blue" if TEXT3.match(/\Ablue/)
+puts "matched fish" if TEXT4.match(/fish\z/)
+puts "matched shirt" if TEXT4.match(/shirt\z/)
+```
+In contrast to the examples in the previous subsection, this prints matched red and matched shirt.
+
+
+## Word Boundaries 
+
+`\b` and `\B` 
+
+Matches word boundaries and non-word boundaries. 
+
+Words are sequences of word characters (`\w`) while non-words are sequences of non-word characters (`\W`). 
+
+A word boundary occurs: 
+  - between any pair of characters, one of which is a word character and one is not
+  - at the beginning of a string if the first char is a word char 
+  - at the end of a string if the last char is a word char 
+
+A non-word boundary occurs: 
+  - between any pair of characters, both of which are word chars or both of which are non-word chars. 
+  - at the beginning of a string if the first char is a non-word char 
+  - at the end of a string if the last char is a non-word char 
+
+
+Examples: 
+
+```ruby 
+Eat some food.
+```
+
+In this case, word boundaries occur: 
+  - before the `E`, `s` and `f`
+  - after the `t`, `e`, and `d` at the end of words 
+
+Non-word boundaries occur between the `o` and `m` in `some` and after the `.` at the end of the sentence. 
+
+
+Another example: 
+
+Match 3 letter words consisting of word characters: 
+
+  `/\b\w\w\w\b/` : word-boundary, word-char, word-char, word-char, word-boundary 
+
+```
+One fish,
+Two fish,
+Red fish,
+Blue fish.
+123 456 7890
+```
+
+Matches: One, Two, Red, 123, 456
+
+
+It's rare that you must use the non-word boundary anchor, `\B`. Here's a somewhat contrived example you can try. Try the regex `/\Bjohn/i` against these strings:
+
+Pattern: non-word boundary, john (case insensitive)
+
+```
+John Silver   # no match 
+Randy Johnson # no match 
+Duke Pettijohn # match john in Pettijohn 
+Joe_Johnson    # match John in Johnson b/c `_` is a word char so non-word boundary
+```
+
+  The regex matches john in the last two strings, but not the first two.
+
+### `\b` and `\B` do not work as word boundaries inside of character classes (between square brackets). In fact, `\b` means something else entirely when inside square brackets: it matches a backspace character.
+
+---
+---
+
+## Exercises 
+
+1. Write a regex that matches the word `The` when it occurs at the beginning of a line. Test it with these strings:
+
+```
+The lazy cat sleeps.
+The number 623 is not a word.
+Then, we went to the movies.
+Ah. The bus has arrived.
+```
+
+Answer: `/^The\b/`
+
+pattern: beginning of line match `The` and word-boundary. 
+
+matches: "The" on line 1 and line 2 only. does not match line 3 because non-word boundary before `n` in `Then`. 
+
+
+2. Write a regex that matches the word cat when it occurs at the end of a line. Test it with these strings:
+
+```
+The lazy cat sleeps
+The number 623 is not a cat
+The Alaskan drives a snowcat
+```
+
+Answer: `/\bcat$` or `/\bcat\z/`
+
+
+3. Write a regex that matches any three-letter word; a word is any string comprised entirely of letters. You can use these test strings.
+
+```
+reds and blues
+The lazy cat sleeps.
+The number 623 is not a word. Or is it?
+```
+
+Answer: `/\b[a-z][a-z][a-z]\b/i`
+
+
+4. Challenge: Write a regex that matches an entire line of text that consists of exactly 3 words as follows:
+
+    - The first word is `A` or `The`.
+    - There is a single space between the first and second words.
+    - The second word is any 4-letter word.
+    - There is a single space between the second and third words.
+    - The third word -- the last word -- is either `dog` or `cat`.
+
+Test your solution with these strings:
+
+```
+A grey cat
+A blue caterpillar
+The lazy dog
+The white cat
+A loud dog
+--A loud dog
+Go away dog
+The ugly rat
+The lazy, loud dog
+```
+
+Answer: `/^(A|The) [A-Za-z][A-Za-z][A-Za-z][A-Za-z] (dog|cat)$/`
+
+As with the other exercises, a proper Ruby solution would use \A and \z instead of ^ and $, but to allow for Rubular limitations, we use ^ and $ instead.
+
+---
+---
+---
+---
+
+
+# Quantifiers 
+
+## Zero or More 
+
+Most commonly used quantifier is `*` that matches zero or more occurrences of the pattern to its left. 
+
+Example: `/\b\d\d\d\d*\b/`
+
+This example matches:
+
+  - Three consecutive digits beginning at a word boundary, followed by any number of digits (0 - infinity), and then another word boundary.
+
+This regex is read as six sub-patterns: 
+  - `\b` : starting at a word boundary 
+  - `\d` : a single digit followed by..
+  - `\d` : a single digit followed by.. 
+  - `\d` : a single digit followed by..
+  - `\d*` : zero or more additional digits
+  - `\b` : ending in a word boundary 
+
+```
+Four and 20 black birds
+365 days in a year, 100 years in a century.
+My phone number is 222-555-1212.
+My serial number is 345678912.
+```
+You should see that this pattern matches 365, 100, 222, 555, 1212, and 345678912, but it does not match 20.
+
+### One thing to watch out for is that "zero or more" truly means zero or more. The regex /x*/ matches every string, even an empty string, or a string that contains no xs anywhere. If you try this pattern in Rubular, it matches between every character.
+---
+
+
+
+When talking about regular expressions that match zero-length strings, imagine an arrow that starts out pointing to the beginning of the string, prior to the first character. When the regex engine goes to work, it moves this imaginary arrow to the right one character at a time until it either finds a match or determines that there is no match. The arrow never points directly at a character, but always points between each pair of characters, and matches typically occur against the character to the right of the arrow. (There are a few exceptions that match the character to the left as well, such as \b.)
+
+When you try to match /x/ for instance, the regex engine looks to the character to the right of the arrow position. If it sees an x, it matches. Otherwise, it advances the arrow one position to the right, and again tries to match starting with the next character.
+
+This is why something like /x*/ matches wherever in the string you're at - with the arrow pointing between characters, the regex is free to say "Nope. There are no x's between me and the next character, so it's a match."
+
+
+---
+
+Another way to see this is to try the regex `/co*t/` against these strings:
+
+```
+ct
+cot
+coot
+cooot
+```
+
+`/co*t/` : pattern is: 
+  - lowercase `c` followed by zero or more `o` characters followed by a lowercase `t`. 
+
+This regex would match all four words above. 
+
+
+---
+
+### Note that the quantifier always applies to one pattern; the pattern it finds to the left of the quantifier. If necessary, you can use grouping parentheses to define the pattern to which you want to apply the `*`. For instance, try `/1(234)*5/` against:
+
+
+```
+15
+12345
+12342342345
+1234235
+```
+
+`/1(234)*5/` : pattern is: 
+  - number 1 followed by...
+  - zero or more occurrences of 234 followed by..
+  - number 5
+
+In the example above, the regex would match: 
+  - Line 1: `15`
+  - Line 2: `12345`
+  - Line 3 : `12342342345`
+  Not line 4. 
+
+---
+
+## One or More 
+
+
+  
