@@ -1220,3 +1220,220 @@ fields = record.split(/\s+/)
 ---
 
 ## Capture Groups: A Diversion 
+
+  - Capture groups capture the matching characters that correspond to part of a regex.
+    - You can use these matches later in the same regex, and when constructing new values based on the matched string. 
+
+  Example: 
+
+  Need to match quoted strings inside some text where either single or double quotes delimit strings. 
+
+  `/(['"]).+?\1/`
+
+  Here the group captures the part of the string that matches the pattern between parentheses; in this case, either a single or double quote. We then match one or more of any other character and end with a \1: we call this sequence a backreference - it references the first capture group in the regex. If the first group matches a double quote, then `\1` matches a double quote, but not a single quote.
+
+  - It may be more reasonable to use two regex to solve this problem:
+  ```ruby 
+  if text.match(/".*?"/) || text.match(/'.*?'/)
+    puts "Got a quoted string"
+  end
+  ```
+
+  ### A regex may contain multiple capture groups, from left to right (1-9).
+
+---
+
+
+## Transformations 
+
+  - Transforming a string with regex involves matching that string against the regex, and using the results to construct a new value. 
+
+  In Ruby we typically use, `String#sub` and `String#gsub`. 
+    - `#sub` transforms the first part of a string that matches a regex
+    - `#gsub` transforms every part of a string that matches. 
+
+
+Example: 
+
+```ruby 
+text = 'Four score and seven'
+vowelless = text.gsub(/[aeiou]/, '*')
+# -> 'F**r sc*r* *nd s*v*n'
+```
+Here we replace every vowel in `text` with an `*`.
+
+---
+
+We can use backreferences in the replacement string (second argument):
+```ruby 
+text = %(We read "War of the Worlds".)
+puts text.sub(/(['"]).+\1/, '\1The Time Machine\1')
+# prints: We read "The Time Machine".
+```
+One thing to note here is that if you double quote the replacement string, you need to double up on the backslashes:
+
+```ruby 
+puts text.sub(/(['"]).+\1/, "\\1The Time Machine\\1")
+```
+
+---
+---
+---
+---
+
+## Exercises
+
+1. Write a method that returns true if its argument looks like a URL, false if it does not.
+
+```ruby 
+url?('http://launchschool.com')   # -> true
+url?('https://example.com')       # -> true
+url?('https://example.com hello') # -> false
+url?('   https://example.com')    # -> false
+```
+
+Answer: 
+
+```ruby 
+def url?(text)
+  return true if text.match(/\Ahttps?:\/\/\S+\z/)
+  false
+end 
+
+# or 
+
+def url?(text)
+  text.match?(/\Ahttps?:\/\/\S+\z/)
+end 
+```
+
+
+2. Write a method that returns all of the fields in a haphazardly formatted string. A variety of spaces, tabs, and commas separate the fields, with possibly multiple occurrences of each delimiter.
+
+```ruby 
+fields("Pete,201,Student")
+# -> ["Pete", "201", "Student"]
+
+fields("Pete \t 201    ,  TA")
+# -> ["Pete", "201", "TA"]
+
+fields("Pete \t 201")
+# -> ["Pete", "201"]
+
+fields("Pete \n 201")
+# -> ["Pete", "\n", "201"]
+```
+
+
+Answer: 
+```ruby 
+def fields(text)
+  text.split(/[, \t]+/)
+end
+```
+
+
+3. Write a method that changes the first arithmetic operator `(+, -, *, /)` in a string to a `'?'` and returns the resulting string. Don't modify the original string.
+
+```ruby 
+mystery_math('4 + 3 - 5 = 2')
+# -> '4 ? 3 - 5 = 2'
+
+mystery_math('(4 * 3 + 2) / 7 - 1 = 1')
+# -> '(4 ? 3 + 2) / 7 - 1 = 1'
+```
+
+Answer: 
+
+```ruby 
+def mystery_math(str)
+  str.sub(/[+\-*\/]/, "?")
+end 
+```
+
+
+4. Write a method that changes every arithmetic operator (+, -, *, /) to a '?' and returns the resulting string. Don't modify the original string.
+
+```ruby
+mysterious_math('4 + 3 - 5 = 2')           # -> '4 ? 3 ? 5 = 2'
+mysterious_math('(4 * 3 + 2) / 7 - 1 = 1') # -> '(4 ? 3 ? 2) ? 7 ? 1 = 1'
+```
+
+Answer: 
+
+```ruby 
+def mysterious_math(str)
+  str.gsub(/[+\-*\/]/, '?')
+end 
+```
+
+
+5. Write a method that changes the first occurrence of the word `apple`, `blueberry`, or `cherry` in a string to `danish`.
+
+```ruby 
+danish('An apple a day keeps the doctor away')
+# -> 'An danish a day keeps the doctor away'
+
+danish('My favorite is blueberry pie')
+# -> 'My favorite is danish pie'
+
+danish('The cherry of my eye')
+# -> 'The danish of my eye'
+
+danish('apple. cherry. blueberry.')
+# -> 'danish. cherry. blueberry.'
+
+danish('I love pineapple')
+# -> 'I love pineapple'
+```
+
+Answer: 
+
+```ruby 
+def danish(str)
+  str.sub(/\b(apple|blueberry|cherry)\b/, "danish")
+end
+```
+
+
+6. Challenge: write a method that changes strings in the date format 2016-06-17 to the format 17.06.2016. You must use a regular expression and should use methods described in this section.
+
+
+```ruby 
+format_date('2016-06-17') # -> '17.06.2016'
+format_date('2016/06/17') # -> '2016/06/17' (no change)
+```
+
+Answer: 
+
+```ruby 
+def format_date(date)
+  date.sub(/\A(\d\d\d\d)-(\d\d)-(\d\d)\z/, '\3.\2.\1')
+end 
+```
+
+We use three capture groups here to capture the year, month, and date, then use them in the replacement string in reverse order, this time separated by periods instead of hyphens.
+
+
+7. Challenge: write a method that changes dates in the format `2016-06-17` or `2016/06/17` to the format `17.06.2016`. You must use a regular expression and should use methods described in this section.
+
+```ruby 
+format_date('2016-06-17') # -> '17.06.2016'
+format_date('2017/05/03') # -> '03.05.2017'
+format_date('2015/01-31') # -> '2015/01-31' (no change)
+```
+
+Answer: 
+
+```ruby 
+def format_date(date)
+  date.sub(/\A(\d\d\d\d)([\-\/])(\d\d)\2(\d\d)\z/, '\4.\3.\1')
+end
+```
+
+---
+---
+---
+---
+
+
