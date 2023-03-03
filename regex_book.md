@@ -1158,3 +1158,65 @@ and the content between the opening and closing tags. If multiple header tags ap
 Answer: 
 
 `/<h1>.*?<\/h1>/`
+
+----
+----
+----
+----
+
+# Using Regex in Ruby 
+
+---
+
+## `String#match` 
+  - Returns a value that indicates whether a match occurred and what substrings matched.
+  - The return value is "truthy" and can be tested in conditional expression. 
+  - The return value is a `MatchData` object that responds to `[0]`, `[1]`, etc. 
+    - Cannot apply most `Array` methods to this object directly
+
+  ```ruby 
+  fetch_url(text) if text.match(/\Ahttps?:\/\/\S+\z/)
+  ```
+
+  ### `=~`
+  
+  ```ruby 
+  fetch_url(text) if text =~ /\Ahttps?:\/\/\S+\z/
+  ```
+
+  - This code returns the index within the string at which the regex is matched or `nil`, if no match. 
+    - `=~` is faster than `match` 
+
+---
+
+
+
+## `String#scan` 
+
+  - Global form of `match` returns an Array of all matching substrings. 
+
+---
+
+## `String#split` 
+
+  - Frequently used with simple string as a delimiter.
+
+  ```ruby 
+  record = "xyzzy\t3456\t334\tabc"
+  fields = record.split("\t")
+  # -> ['xyzzy', '3456', '334', 'abc']
+  ```
+`split` returns an Array that contains the values from each of the split fields.
+
+
+- You may encounter data where arbitrary whitespace characters separate fields, and there may be more than one whitespace character between each pair of items. The regex form of split comes in handy in such cases:
+
+```ruby 
+record = "xyzzy  3456  \t  334\t\t\tabc"
+fields = record.split(/\s+/)
+# -> ['xyzzy', '3456', '334', 'abc']
+```
+
+---
+
+## Capture Groups: A Diversion 
