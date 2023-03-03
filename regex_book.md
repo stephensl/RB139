@@ -827,5 +827,144 @@ In the example above, the regex would match:
 
 ## One or More 
 
+The `+` quantifier is nearly identical to the `*` quantifier but matches *one or more* occurrences, rather than *zero or more*. 
 
-  
+Example: 
+
+In the previous section, we wanted to match 3 or more digits using: 
+ - `/\b\d\d\d\d*\b/`
+
+If this is updated to utilize the `+` quanitifier, we would have to remove one of the `\d` patterns, because `\d+` matches one or more, rather than zero or more digits.
+
+This would match sequence of four or more digits: 
+  - `/\b\d\d\d\d+\b`
+
+This matches three or more digits: 
+  - `/\b\d\d\d+\b`
+    - pattern, word boundary, digit, digit, one or more digits, word boundary.  
+
+We saw earlier that a regex like /x*/ matches any string because it matches between every character. There is no similar subtlety to the + quantifier; /x+/ matches any sequence of one or more xs; it never matches the empty string between characters. Try it:
+
+```
+a single x matches.
+As is a string of xxxxx like that.
+```
+ Matches only `x`'s
+
+
+
+## Zero or One 
+
+To match a pattern that occurs once or not at all use `?` quantifier 
+
+Example: 
+
+  - To test whether a string contains the words `cot` or `coot`. 
+
+    - `/coo?t/` 
+
+  - This matches a `c`, followed by an `o` followed by an optional `o`, followed by a `t`. 
+
+
+Another Example: 
+
+To match a date that may contain `-` separator characters. Date may be in `20180111` format or `2018-01-11`.
+
+  - `\b\d\d\d\d-?\d\d-?\d\d\b`
+    - word boundary followed by
+    - digit followed by
+    - digit followed by
+    - digit followed by
+    - digit followed by 
+    - optional `-` followed by 
+    - digit followed by
+    - digit followed by 
+    - optional `-` followed by
+    - digit followed by
+    - digit followed by 
+    - word boundary.
+
+  This would match: 
+  ```
+  20170111
+  2017-01-11
+  2017-0111
+  201701-11
+  ```
+
+  But would not match `2018/01/11` 
+
+---
+
+## Ranges
+
+The `*`, `+`, and `?` quantifiers match a repeated sequence, however you may need to specify the repeat count more precisely. 
+
+Examples: 
+  - Test phone number to see if exactly 10 digits 
+  - Match all words with at least seven characters 
+  - Match all words that are 5-8 characters long. 
+
+The range quantifier is a pair of curly braces `{}`, with one or two numbers and an optional comma between the braces. 
+  - `p{m}` matches precisely m occurrences of the pattern `p`. 
+  - `p{m,}` matches `m` or more occurrences of `p`. 
+  - `p{m,n}` matches `m` or more occurrences of `p` but not more than `n`.
+
+
+Example: 
+
+Test whether a string contains precisely 10 digits.
+
+  - `/\b\d{10}\b/`
+
+  Matches first two of these strings, not last two. 
+
+  ```
+  2225551212 1234567890 123456789 12345678900
+  ```
+
+Match numbers that are at least three digits in length:
+
+  - `/b\d{3,}\b/`
+    - word boundary followed by 
+    - three or more digits followed by 
+    - word boundary
+
+
+Match words of 5-8 letters 
+
+  - `\b[a-z]{5,8}\b/i` 
+
+  ```
+  Bizarre
+  a
+  one two three four five six seven eight nine
+  sensitive
+  dropouts
+  ```
+This pattern matches Bizarre, three, seven, eight, and dropouts.
+
+---
+
+## Greediness 
+
+The quantifiers discussed so far are *greedy* meaning that they always match the longest possible string they can. 
+
+To match the fewest number of characters possible, we call this *lazy* match. 
+
+  - You can request lazy match by adding a `?` after the main quantifier. 
+
+Example: 
+
+  `/a[abc]*?c/` 
+
+  - matches `abc` and `ac` in `xabcbcbacy`.
+
+---
+---
+---
+---
+
+## Exercises: 
+
+1. 
