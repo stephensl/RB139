@@ -827,5 +827,613 @@ In the example above, the regex would match:
 
 ## One or More 
 
+The `+` quantifier is nearly identical to the `*` quantifier but matches *one or more* occurrences, rather than *zero or more*. 
 
+Example: 
+
+In the previous section, we wanted to match 3 or more digits using: 
+ - `/\b\d\d\d\d*\b/`
+
+If this is updated to utilize the `+` quanitifier, we would have to remove one of the `\d` patterns, because `\d+` matches one or more, rather than zero or more digits.
+
+This would match sequence of four or more digits: 
+  - `/\b\d\d\d\d+\b`
+
+This matches three or more digits: 
+  - `/\b\d\d\d+\b`
+    - pattern, word boundary, digit, digit, one or more digits, word boundary.  
+
+We saw earlier that a regex like /x*/ matches any string because it matches between every character. There is no similar subtlety to the + quantifier; /x+/ matches any sequence of one or more xs; it never matches the empty string between characters. Try it:
+
+```
+a single x matches.
+As is a string of xxxxx like that.
+```
+ Matches only `x`'s
+
+
+
+## Zero or One 
+
+To match a pattern that occurs once or not at all use `?` quantifier 
+
+Example: 
+
+  - To test whether a string contains the words `cot` or `coot`. 
+
+    - `/coo?t/` 
+
+  - This matches a `c`, followed by an `o` followed by an optional `o`, followed by a `t`. 
+
+
+Another Example: 
+
+To match a date that may contain `-` separator characters. Date may be in `20180111` format or `2018-01-11`.
+
+  - `\b\d\d\d\d-?\d\d-?\d\d\b`
+    - word boundary followed by
+    - digit followed by
+    - digit followed by
+    - digit followed by
+    - digit followed by 
+    - optional `-` followed by 
+    - digit followed by
+    - digit followed by 
+    - optional `-` followed by
+    - digit followed by
+    - digit followed by 
+    - word boundary.
+
+  This would match: 
+  ```
+  20170111
+  2017-01-11
+  2017-0111
+  201701-11
+  ```
+
+  But would not match `2018/01/11` 
+
+---
+
+## Ranges
+
+The `*`, `+`, and `?` quantifiers match a repeated sequence, however you may need to specify the repeat count more precisely. 
+
+Examples: 
+  - Test phone number to see if exactly 10 digits 
+  - Match all words with at least seven characters 
+  - Match all words that are 5-8 characters long. 
+
+The range quantifier is a pair of curly braces `{}`, with one or two numbers and an optional comma between the braces. 
+  - `p{m}` matches precisely m occurrences of the pattern `p`. 
+  - `p{m,}` matches `m` or more occurrences of `p`. 
+  - `p{m,n}` matches `m` or more occurrences of `p` but not more than `n`.
+
+
+Example: 
+
+Test whether a string contains precisely 10 digits.
+
+  - `/\b\d{10}\b/`
+
+  Matches first two of these strings, not last two. 
+
+  ```
+  2225551212 1234567890 123456789 12345678900
+  ```
+
+Match numbers that are at least three digits in length:
+
+  - `/b\d{3,}\b/`
+    - word boundary followed by 
+    - three or more digits followed by 
+    - word boundary
+
+
+Match words of 5-8 letters 
+
+  - `\b[a-z]{5,8}\b/i` 
+
+  ```
+  Bizarre
+  a
+  one two three four five six seven eight nine
+  sensitive
+  dropouts
+  ```
+This pattern matches Bizarre, three, seven, eight, and dropouts.
+
+---
+
+## Greediness 
+
+The quantifiers discussed so far are *greedy* meaning that they always match the longest possible string they can. 
+
+To match the fewest number of characters possible, we call this *lazy* match. 
+
+  - You can request lazy match by adding a `?` after the main quantifier. 
+
+Example: 
+
+  `/a[abc]*?c/` 
+
+  - matches `abc` and `ac` in `xabcbcbacy`.
+
+---
+---
+---
+---
+
+## Exercises: 
+
+1. Write a regex that matches any word that begins with b and ends with an e, and has any number of letters in-between. You may limit your regex to lowercase letters. Test it with these strings.
+
+```
+To be or not to be
+Be a busy bee
+I brake for animals.
+```
+
+Answer: 
+
+`/\bb[a-z]*e\b/`
+
+This regex should match the words `be` (both instances), `bee`, and `brake`.
+
+
+2. Write a regex that matches any line of text that ends with a ?. Test it with these strings.
+
+```
+What's up, doc?
+Say what? No way.
+?
+Who? What? Where? When? How?
+```
+
+Answer: 
+
+`/^.*\?$/`
+  - start of string is any number of characters
+  - escape `?` for literal `?`
+  - `$` indicates end of line 
+  -  Note the use of `.*`; you'll see this often in regex. It matches any sequence of characters, but, by default, does not match a newline character. 
+    - It's how you ignore everything between two points when matching.
+
+
+3. Write a regex that matches any line of text that ends with a ?, but does not match a line that consists entirely of a single ?. Test it with the strings from the previous exercise.
+
+There should be two matches.
+
+
+Answer: 
+
+`/^.+\?$/`
+
+  - The `.+` pattern makes the regex match at least one character before it attempts to match the `?`.
+
+
+4. Write a regex that matches any line of text that contains nothing but a URL. For this exercise, a URL begins with http:// or https://, and continues until it detects a whitespace character or end of line. Test your regex with these strings:
+
+```
+http://launchschool.com/
+https://mail.google.com/mail/u/0/#inbox
+htpps://example.com
+Go to http://launchschool.com/
+https://user.example.com/test.cgi?a=p&c=0&t=0&g=0 hello
+http://launchschool.com/
+```
+
+
+Answer: 
+
+`/^https*:\/\/\S*$/`
+
+  - anchor to start of line
+  - `http` part of URL followed by
+  - optional `s` (zero or more)
+  - :// 
+  - `S` matches string of non-whitespace characters
+  - Explicit line anchor `$` to prevent matching URL that is not end of line
+
+
+5. Modify your regex from the previous exercise so the URL can have optional leading or trailing whitespace, but is otherwise on a line by itself. To test your regex with trailing whitespace, you must add some spaces to the end of some lines in your sample text.
+
+
+Answer: 
+
+`/^\s*https?:\/\/\S*\s*$/`
+
+
+6. Modify your regex from the previous exercise so the URL can appear anywhere on each line, so long as it begins at a word boundary.
+
+
+Answer: 
+
+`/\bhttps?:\/\/\S*/`
+
+
+7. Write a regex that matches any word that contains at least three occurrences of the letter i. Test your regex against these strings:
+
+There should be three matches.
+
+```
+Mississippi
+ziti 0minimize7
+inviting illegal iridium
+```
+
+Answer: 
+
+`/\b([a-z]*i){3}[a-z]*\b/i`
+
+It uses the {3} quantifier to perform the 3-occurrences part of the match. The quantifier applies to `([a-z]*i)` which, uses grouping parentheses to treat `[a-z]*i` as a single pattern for use by `{3}`.
+
+
+
+8. Write a regex that matches the last word in each line of text. For this exercise, assume that words are any sequence of non-whitespace characters. Test your regex against these strings:
+
+```
+What's up, doc?
+I tawt I taw a putty tat!
+Thufferin' thuccotath!
+Oh my darling, Clementine!
+Camptown ladies sing this song, doo dah.
+```
+
+Answer: 
+
+`/\S+$/`
+
+match `doc?`, `tat!`, `thuccotath!`, `Clementine!`, and `dah`.
+
+
+9. Write a regex that matches lines of text that contain at least 3, but no more than 6, consecutive comma separated numbers. You may assume that every number on each line is both preceded by and followed by a comma. Test your regex against these strings:
+
+```
+,123,456,789,123,345,
+,123,456,,789,123,
+,23,56,7,
+,13,45,78,23,45,34,
+,13,45,78,23,45,34,56,
+```
+
+Answer: 
+
+`/^,(\d+,){3,6}$/`
+
+matches the first, third, and fourth lines
+
+
+10. Write a regex that matches lines of text that contain at least 3, but no more than 6, consecutive comma separated numbers. In this exercise, you can assume that the first number on each line is not preceded by a comma, and the last number is not followed by a comma. Test your regex against these strings:
+
+```
+123,456,789,123,345
+123,456,,789,123
+23,56,7
+13,45,78,23,45,34
+13,45,78,23,45,34,56
+```
+
+
+Answer: 
+
+`^(/d+,){2,5}\d+$/`
+
+Your solution should match the first, third, and fourth lines. In this case, the lack of a comma at each end of the strings complicates our solution slightly - we can't check for 3-6 occurrences of `\d+,`, but have to check for 2-5 occurrences followed by a final `\d+` pattern.
+
+
+11. Challenge: Write a regex that matches lines of text that contain either 3 comma separated numbers or 6 or more comma separated numbers. Test your regex against these strings:
+
+```
+123,456,789,123,345
+123,456,,789,123
+23,56,7
+13,45,78,23,45,34
+13,45,78,23,45,34,56
+```
+
+
+Answer: 
+`/(^(\d+,){2}\d+$|^(\d+,){5,}\d+$)/`
+
+In a real program, you may instead choose to use two separate regex:
+
+```ruby 
+if text.match(/^(\d+,){2}\d+$/) || text.match(/^(\d+,){5,}\d+$/)
+```
+
+
+12. Write a regex that matches HTML h1 header tags, e.g.,
+
+```html 
+<h1>Main Heading</h1>
+<h1>Another Main Heading</h1>
+<h1>ABC</h1> <p>Paragraph</p> <h1>DEF</h1><p>Done</p>
+```
+
+and the content between the opening and closing tags. If multiple header tags appear on one line, your regex should match the opening and closing tags and the text content of the headers, but nothing else. You may assume that there are no nested tags in the text between <h1> and </h1>.
+
+
+Answer: 
+
+`/<h1>.*?<\/h1>/`
+
+----
+----
+----
+----
+
+# Using Regex in Ruby 
+
+---
+
+## `String#match` 
+  - Returns a value that indicates whether a match occurred and what substrings matched.
+  - The return value is "truthy" and can be tested in conditional expression. 
+  - The return value is a `MatchData` object that responds to `[0]`, `[1]`, etc. 
+    - Cannot apply most `Array` methods to this object directly
+
+  ```ruby 
+  fetch_url(text) if text.match(/\Ahttps?:\/\/\S+\z/)
+  ```
+
+  ### `=~`
   
+  ```ruby 
+  fetch_url(text) if text =~ /\Ahttps?:\/\/\S+\z/
+  ```
+
+  - This code returns the index within the string at which the regex is matched or `nil`, if no match. 
+    - `=~` is faster than `match` 
+
+---
+
+
+
+## `String#scan` 
+
+  - Global form of `match` returns an Array of all matching substrings. 
+
+---
+
+## `String#split` 
+
+  - Frequently used with simple string as a delimiter.
+
+  ```ruby 
+  record = "xyzzy\t3456\t334\tabc"
+  fields = record.split("\t")
+  # -> ['xyzzy', '3456', '334', 'abc']
+  ```
+`split` returns an Array that contains the values from each of the split fields.
+
+
+- You may encounter data where arbitrary whitespace characters separate fields, and there may be more than one whitespace character between each pair of items. The regex form of split comes in handy in such cases:
+
+```ruby 
+record = "xyzzy  3456  \t  334\t\t\tabc"
+fields = record.split(/\s+/)
+# -> ['xyzzy', '3456', '334', 'abc']
+```
+
+---
+
+## Capture Groups: A Diversion 
+
+  - Capture groups capture the matching characters that correspond to part of a regex.
+    - You can use these matches later in the same regex, and when constructing new values based on the matched string. 
+
+  Example: 
+
+  Need to match quoted strings inside some text where either single or double quotes delimit strings. 
+
+  `/(['"]).+?\1/`
+
+  Here the group captures the part of the string that matches the pattern between parentheses; in this case, either a single or double quote. We then match one or more of any other character and end with a \1: we call this sequence a backreference - it references the first capture group in the regex. If the first group matches a double quote, then `\1` matches a double quote, but not a single quote.
+
+  - It may be more reasonable to use two regex to solve this problem:
+  ```ruby 
+  if text.match(/".*?"/) || text.match(/'.*?'/)
+    puts "Got a quoted string"
+  end
+  ```
+
+  ### A regex may contain multiple capture groups, from left to right (1-9).
+
+---
+
+
+## Transformations 
+
+  - Transforming a string with regex involves matching that string against the regex, and using the results to construct a new value. 
+
+  In Ruby we typically use, `String#sub` and `String#gsub`. 
+    - `#sub` transforms the first part of a string that matches a regex
+    - `#gsub` transforms every part of a string that matches. 
+
+
+Example: 
+
+```ruby 
+text = 'Four score and seven'
+vowelless = text.gsub(/[aeiou]/, '*')
+# -> 'F**r sc*r* *nd s*v*n'
+```
+Here we replace every vowel in `text` with an `*`.
+
+---
+
+We can use backreferences in the replacement string (second argument):
+```ruby 
+text = %(We read "War of the Worlds".)
+puts text.sub(/(['"]).+\1/, '\1The Time Machine\1')
+# prints: We read "The Time Machine".
+```
+One thing to note here is that if you double quote the replacement string, you need to double up on the backslashes:
+
+```ruby 
+puts text.sub(/(['"]).+\1/, "\\1The Time Machine\\1")
+```
+
+---
+---
+---
+---
+
+## Exercises
+
+1. Write a method that returns true if its argument looks like a URL, false if it does not.
+
+```ruby 
+url?('http://launchschool.com')   # -> true
+url?('https://example.com')       # -> true
+url?('https://example.com hello') # -> false
+url?('   https://example.com')    # -> false
+```
+
+Answer: 
+
+```ruby 
+def url?(text)
+  return true if text.match(/\Ahttps?:\/\/\S+\z/)
+  false
+end 
+
+# or 
+
+def url?(text)
+  text.match?(/\Ahttps?:\/\/\S+\z/)
+end 
+```
+
+
+2. Write a method that returns all of the fields in a haphazardly formatted string. A variety of spaces, tabs, and commas separate the fields, with possibly multiple occurrences of each delimiter.
+
+```ruby 
+fields("Pete,201,Student")
+# -> ["Pete", "201", "Student"]
+
+fields("Pete \t 201    ,  TA")
+# -> ["Pete", "201", "TA"]
+
+fields("Pete \t 201")
+# -> ["Pete", "201"]
+
+fields("Pete \n 201")
+# -> ["Pete", "\n", "201"]
+```
+
+
+Answer: 
+```ruby 
+def fields(text)
+  text.split(/[, \t]+/)
+end
+```
+
+
+3. Write a method that changes the first arithmetic operator `(+, -, *, /)` in a string to a `'?'` and returns the resulting string. Don't modify the original string.
+
+```ruby 
+mystery_math('4 + 3 - 5 = 2')
+# -> '4 ? 3 - 5 = 2'
+
+mystery_math('(4 * 3 + 2) / 7 - 1 = 1')
+# -> '(4 ? 3 + 2) / 7 - 1 = 1'
+```
+
+Answer: 
+
+```ruby 
+def mystery_math(str)
+  str.sub(/[+\-*\/]/, "?")
+end 
+```
+
+
+4. Write a method that changes every arithmetic operator (+, -, *, /) to a '?' and returns the resulting string. Don't modify the original string.
+
+```ruby
+mysterious_math('4 + 3 - 5 = 2')           # -> '4 ? 3 ? 5 = 2'
+mysterious_math('(4 * 3 + 2) / 7 - 1 = 1') # -> '(4 ? 3 ? 2) ? 7 ? 1 = 1'
+```
+
+Answer: 
+
+```ruby 
+def mysterious_math(str)
+  str.gsub(/[+\-*\/]/, '?')
+end 
+```
+
+
+5. Write a method that changes the first occurrence of the word `apple`, `blueberry`, or `cherry` in a string to `danish`.
+
+```ruby 
+danish('An apple a day keeps the doctor away')
+# -> 'An danish a day keeps the doctor away'
+
+danish('My favorite is blueberry pie')
+# -> 'My favorite is danish pie'
+
+danish('The cherry of my eye')
+# -> 'The danish of my eye'
+
+danish('apple. cherry. blueberry.')
+# -> 'danish. cherry. blueberry.'
+
+danish('I love pineapple')
+# -> 'I love pineapple'
+```
+
+Answer: 
+
+```ruby 
+def danish(str)
+  str.sub(/\b(apple|blueberry|cherry)\b/, "danish")
+end
+```
+
+
+6. Challenge: write a method that changes strings in the date format 2016-06-17 to the format 17.06.2016. You must use a regular expression and should use methods described in this section.
+
+
+```ruby 
+format_date('2016-06-17') # -> '17.06.2016'
+format_date('2016/06/17') # -> '2016/06/17' (no change)
+```
+
+Answer: 
+
+```ruby 
+def format_date(date)
+  date.sub(/\A(\d\d\d\d)-(\d\d)-(\d\d)\z/, '\3.\2.\1')
+end 
+```
+
+We use three capture groups here to capture the year, month, and date, then use them in the replacement string in reverse order, this time separated by periods instead of hyphens.
+
+
+7. Challenge: write a method that changes dates in the format `2016-06-17` or `2016/06/17` to the format `17.06.2016`. You must use a regular expression and should use methods described in this section.
+
+```ruby 
+format_date('2016-06-17') # -> '17.06.2016'
+format_date('2017/05/03') # -> '03.05.2017'
+format_date('2015/01-31') # -> '2015/01-31' (no change)
+```
+
+Answer: 
+
+```ruby 
+def format_date(date)
+  date.sub(/\A(\d\d\d\d)([\-\/])(\d\d)\2(\d\d)\z/, '\4.\3.\1')
+end
+```
+
+---
+---
+---
+---
+
+
