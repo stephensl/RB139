@@ -49,7 +49,7 @@ Algorithm:
   - Constructor 
     - define method to accept three arguments 
     - valid_triangle? (helper method)
-    - assign sides in an array to instance variable 
+    - assign sides in an array to instance variables 
   
   - valid_triangle method
     - define method to accept an array
@@ -67,17 +67,42 @@ Code:
 =end 
 
 class Triangle 
+  attr_reader :side_1, :side_2, :side_3, :all_sides 
+
   def initialize(*sides)
-    raise(ArgumentError, "Not a valid triangle") unless valid_triangle?(sides)
     @side_1, @side_2, @side_3 = sides 
+    raise(ArgumentError, "Not a valid triangle") unless valid_triangle?(sides)
+    @all_sides = sides
   end 
 
+  def kind 
+    case all_sides.uniq.size 
+      when 1 then "equilateral"
+      when 2 then "isosceles"
+      when 3 then "scalene"
+      else "Error. Is this really a valid triangle?"
+    end
+  end 
+
+  private 
+
   def valid_triangle?(arr)
-    arr.all? {|side| side > 0} 
+    arr.all? {|side| side > 0} &&
+    side_1 + side_2 > side_3 &&
+    side_1 + side_3 > side_2 &&
+    side_2 + side_3 > side_1 
   end 
 end 
 
-mine = Triangle.new(2, 4, 6)
-p mine
+# Testing File: tests_easy_1.rb
 
-    
+# Run options: --seed 39650
+
+# # Running:
+
+# ................
+
+# Finished in 0.018406s, 869.2770 runs/s, 869.2770 assertions/s.
+
+# 16 runs, 16 assertions, 0 failures, 0 errors, 0 skips
+
