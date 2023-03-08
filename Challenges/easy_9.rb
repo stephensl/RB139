@@ -39,4 +39,41 @@ Define class BeerSong
   - ::verse method 
     - accepts one argument 0-99
     - returns verse with proper verse number interpolated
-  - 
+  - :: verses method
+    - accepts two arguments, start, end
+    - returns verse from first argument up to or down to second. 
+  - ::lyrics method
+    - returns all lines 
+
+C:
+=end 
+
+class BeerSong 
+  NUMBER_AND_TENSE = {
+    (0)
+  }
+  def self.verse(num)
+    if num > 1
+     "#{num} bottles of beer on the wall, #{num} bottles of beer.\n" \
+        "Take one down and pass it around, #{num - 1} bottles of beer on the wall.\n" \
+    elsif num == 1
+      "#{num} bottle of beer on the wall, #{num} bottle of beer.\n" \
+        "Take it down and pass it around, no more bottles of beer on the wall.\n" \
+    else 
+     "No more bottles of beer on the wall, no more bottles of beer.\n" \
+        "Go to the store and buy some more, 99 bottles of beer on the wall."
+    end 
+  end
+
+  def self.verses(start, finish)
+    start.downto(finish) do |num|
+      verse(num)
+    end
+  end 
+
+  def self.lyrics
+    verses(99, 0)
+  end 
+end
+
+BeerSong.verses(99, 80)
