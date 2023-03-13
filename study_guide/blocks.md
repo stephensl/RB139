@@ -156,5 +156,57 @@ Execution flow of above example:
     end 
 
     test { |prefix| puts 'xyz' }
+    # 1
+    # hello
+    # xyz
+    # goodbye
+    # 2
+    # => nil
     ```
 
+## Using Closures
+
+### Accessing and modifying variables included in binding.
+```ruby 
+def for_each_in(arr)
+  arr.each { |element| yield element }
+end 
+
+arr = [1, 2, 3, 4, 5]
+results = [0]
+
+for_each_in(arr) do |num|
+  total = results[-1] + num
+  results.push(total)
+end 
+
+p results #=> [0, 1, 3, 6, 10, 15]
+```
+Though the block passed to `for_each_in` is invoked inside the `for_each_in` method, the block still has access to the results array through closure. 
+
+
+### When methods or blocks return closures.
+  - We cannot return blocks, but can return `Proc`s and `lambda`s
+
+```ruby
+def sequence
+  counter = 0
+  Proc.new { counter += 1 }
+end 
+
+s1 = sequence   # assigning to return value of method..Proc object.
+                  # Proc object has access to counter through closure.
+
+p s1            # #<Proc:0x0000012a7d246988...
+
+p s1.call # 1
+p s1.call # 2
+p s1.call # 3
+
+s2 = sequence # returns new Proc object with own copy of counter
+
+s2.call # 1
+s2.call # 2
+
+s1.call # 4    (s1 maintains count)
+s2.call # 3
