@@ -31,9 +31,49 @@ p call_proc(my_proc)
 
 The example above will output `1` and return `nil`. The closure's binding includes local variable `count` as it is defined in the outer scope. Even though the method-local-variable `count` is initialized within the `call_proc` method, the closure maintains its connection to its binding. 
 
-## How does Ruby implement closures?
+## Scope
 
-Ruby implements closures through: 
-  - Blocks
-  - `Proc`s 
-  - `lamdba`s
+In order for a closure to be passed around and executed later, it must maintain connection to the surrounding context from where it was defined. 
+
+```ruby 
+def call_me(arg)
+  arg.call 
+end 
+
+name = "Robert"
+
+chunk = Proc.new { puts "hi #{name}" } 
+
+call_me(chunk)
+
+# hi Robert
+# => nil
+```
+
+  1. Closure keeps track of all information needed in order to execute correctly later.
+    - local variables
+    - method references
+    - constants
+    - other artifacts needed for execution
+  2. Local variables must be defined *before* the closure is created in order to be accessed by the closure, unless passed in explicitly when the closure is called. 
+    - Local variables that are part of a closure's binding, may be reassigned/updated and the closure will maintain the updated value. 
+
+    ```ruby 
+    def call_me(arg)
+      arg.call 
+    end 
+
+    name = "Robert"
+    
+    chunk = Proc.new { puts "hi #{name}" }
+
+    p chunk.call    # => hi Robert
+    
+    name = "Billy"
+
+    p chunk.call # => hi Billy
+
+    call_me(chunk)    # hi Billy
+    ```
+
+
