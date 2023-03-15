@@ -142,3 +142,105 @@
 # p make_all_upcase(arr, my_proc)
 
 # # => ["THE", "CAT", "IS", "FUNNY"]
+
+#
+#
+#
+#
+#
+
+
+#### The unary `&` ####
+
+
+# In method definition: 
+  # - expects to be passed a block, which it converts to a proc
+
+# def select(collection, &block)
+#   selected = []
+
+#   collection.each do |element|
+#     p block  # outputs proc object 
+#     if block.call(element)
+#       selected << element 
+#     end 
+#   end 
+
+#   selected 
+# end 
+
+# p select([1, 2, 3]) { |num| num.odd? }
+
+# => 
+#<Proc:0x00000001033fc268 block_clarity.rb:171>
+#<Proc:0x00000001033fc268 block_clarity.rb:171>
+#<Proc:0x00000001033fc268 block_clarity.rb:171>
+# [1, 3]
+
+# 
+#
+#
+
+# In method invocation:
+  # - expects a proc, which is converted to a block
+  # - this block is passed in to the called method
+
+  # - if is non-proc object:
+  # - ruby calls `#to_proc` and the resulting proc is converted into a block by `&`
+
+  # def select(collection, proc)
+  #   selected = []
+
+  #   collection.each do |element|
+  #     p proc
+  #     if proc.call(element)
+  #       selected << element 
+  #     end 
+  #   end 
+  #   selected 
+  # end 
+
+  # a_proc = Proc.new { |num| num.odd? }
+  
+  # p select([1, 2, 3], a_proc)
+
+
+
+
+
+  # or 
+
+
+
+
+  # def select(collection)
+  #   selected = []
+
+  #   collection.each do |element|
+  #     if yield(element)
+  #       selected << element 
+  #     end 
+  #   end 
+  #   selected 
+  # end 
+
+  # a_proc = Proc.new { |num| num.odd? }
+  
+  # p select([1, 2, 3], &a_proc)
+
+
+
+  #
+  #
+  #
+  #
+
+  # &block means something different in the method implementation (converts the optionally passed in block into a Proc object unless it is already a Proc object) than in the method invocation (converts a Proc object into a block).
+
+def yield_to_explicit_block(&block)
+  block.call 
+end
+
+proc = Proc.new { puts 'hello' }
+
+yield_to_explicit_block(&proc)
