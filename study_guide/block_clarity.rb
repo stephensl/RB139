@@ -130,15 +130,15 @@
 
 # Playing around with previous example
 
-def make_all_upcase(collection, a_proc)
-  collection.each do |element|
-    a_proc.call(element)
-  end 
-end 
+# def make_all_upcase(collection, a_proc)
+#   collection.each do |element|
+#     a_proc.call(element)
+#   end 
+# end 
 
-arr = %w(the cat is funny)
-my_proc = :upcase!.to_proc 
+# arr = %w(the cat is funny)
+# my_proc = :upcase!.to_proc 
 
-p make_all_upcase(arr, my_proc)
+# p make_all_upcase(arr, my_proc)
 
-# => ["THE", "CAT", "IS", "FUNNY"]
+# # => ["THE", "CAT", "IS", "FUNNY"]
