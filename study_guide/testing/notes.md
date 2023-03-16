@@ -39,3 +39,46 @@ We are able to automate testing in order to avoid manually verifying that the co
   - full list here http://docs.seattlerb.org/minitest/Minitest/Assertions.html
 
 
+- `assert(arg)` 
+  - tests whether arg is truthy.
+
+- `assert_equal(expected, actual)` 
+  - tests whether expected `==` actual
+
+- `assert_nil(object)`
+  - tests whether object evaluates to `nil`
+
+- `assert_raises(*error) { block }` 
+  - tests whether any error included in the argument is produced by executing block
+
+- `assert_instance_of(class, object)`
+  - tests whether `object` is an instance of `class`
+
+- `assert_includes(collection, object)`
+  - tests whether `collection` includes `object`
+
+Interestingly, `assert_includes` calls the assert method twice behind the scenes. This means that for each `assert_includes` call, you will get 2 assertions, not 1. This also applies to `refute_includes` as well as `assert_empty`, `assert_match`, and their `refute` counterparts. This oddity can be safely ignored.
+
+
+# Refutations 
+
+  - `refute(object)`
+    - tests whether `object` is falsey
+
+
+# SEAT Approach 
+
+  1. Set up necessary objects 
+  2. Execute code against the object we're testing
+  3. Assert that the executed code did the right thing
+  4. Tear down and clean up any lingering artifacts
+
+
+# Testing Equality 
+
+  - `assert_equal`
+    - tests *value* equality
+    - utilizes `==` method
+
+  - `assert_same` 
+    - object equality
