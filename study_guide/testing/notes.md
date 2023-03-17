@@ -87,3 +87,15 @@ Interestingly, `assert_includes` calls the assert method twice behind the scenes
 
 In order to utilize `assert_equal` with custom classes, we must define a `==` method for the class.
 
+# Code Coverage
+
+Use `simplecov` gem. 
+
+In test file: 
+
+`require 'simplecov'`
+`SimpleCov.start` 
+
+Once run test file, will see new directory added to file system called `coverage`. 
+
+Open `index.html` file to view testing coverage
