@@ -82,3 +82,8 @@ Interestingly, `assert_includes` calls the assert method twice behind the scenes
 
   - `assert_same` 
     - object equality
+
+## Custom classes 
+
+In order to utilize `assert_equal` with custom classes, we must define a `==` method for the class.
+
