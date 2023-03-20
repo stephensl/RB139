@@ -149,54 +149,97 @@ A: for # make_diamond(letter)
 
 =end 
 
-def upper_half_diamond(letter)
-  alpha_position = (letter.downcase.ord) - 96
-  letter_range = ('A'..letter).to_a
-  pre_space = alpha_position - 1
-  between_space = 0
 
-  letter_range.each do |char|
-    if char == 'A'
-      puts "#{" " * pre_space}#{char}"
-      pre_space -= 1 
-      between_space += 2 
-    else 
-      puts "#{" " * pre_space}#{char}#{" " * between_space}#{char}"
-      pre_space -= 1
-      between_space += 2 
+### FIRST ATTEMPT 
+
+# def upper_half_diamond(letter)
+#   alpha_position = (letter.downcase.ord) - 96
+#   letter_range = ('A'..letter).to_a
+#   pre_space = alpha_position - 1
+#   between_space = 0
+
+#   letter_range.each do |char|
+#     if char == 'A'
+#       puts "#{" " * pre_space}#{char}"
+#       pre_space -= 1 
+#       between_space += 2 
+#     else 
+#       puts "#{" " * pre_space}#{char}#{" " * between_space}#{char}"
+#       pre_space -= 1
+#       between_space += 2 
+#     end 
+#   end 
+
+
+#   pre_space += 2
+#   between_space -= 4 
+#   letter_range = letter_range.reverse 
+#   letter_range.pop 
+
+#   letter_range.each do  |char|
+#     if char == 'A'
+#       puts "#{" " * pre_space}#{char}"
+#       pre_space += 1
+#       between_space -= 2 
+#     else  
+#       puts "#{" " * pre_space}#{char}#{" " * between_space}#{char}"
+#       pre_space += 1
+#       between_space -= 2 
+#     end 
+#   end 
+# end 
+
+
+# upper_half_diamond('G')
+
+#####################
+#####################
+#####################
+#####################
+#####################
+
+# Working from LS Solution
+
+
+
+class Diamond 
+  def self.make_diamond(letter)
+    range = ('A'..letter).to_a + ('A'...letter).to_a.reverse 
+    diamond_width = max_width(letter)
+
+    range.each_with_object([]) do |let, arr|
+      arr << make_row(let).center(diamond_width)
+    end.join("\n") + "\n"
+  end 
+
+
+
+  def self.make_row(letter)
+    return "A" if letter == 'A'
+    return "B B" if letter == 'B'
+
+    letter + determine_spaces(letter) + letter
+  end 
+
+  def self.determine_spaces(letter)
+    all_letters = ['B']
+    spaces = 1
+
+    until all_letters.include?(letter)
+      current_letter = all_letters.last 
+      all_letters << current_letter.next 
+      spaces += 2 
     end 
+
+    ' ' * spaces 
+  end 
+
+  def self.max_width(letter)
+    return 1 if letter == 'A'
+
+    determine_spaces(letter).count(' ') + 2
   end 
 end 
 
-def lower_half_diamond(letter)
-  pre_space = 1 
-  between_space = (0..49).to_a
-  alpha_position = (letter.downcase.ord) - 96
-  now_between = between_space[alpha_position]
-  letter_range = ('A'..letter).to_a.reverse 
-  p now_between
+puts Diamond.make_diamond('G')
 
-  letter_range.each do |char|
-    if char == 'A' 
-      puts "#{" " * pre_space}#{char}"
-    else 
-      puts "#{" " * pre_space}#{char}#{" " * now_between}#{char}"
-      pre_space += 1
-      now_between -= 2
-    end 
-  end 
-end 
-
-def make_diamond(letter)
-  upper_half_diamond(letter)
-  lower_half_diamond(letter)
-end 
-
-make_diamond('G')
-
- 
-
-
-
-
-    
