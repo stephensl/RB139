@@ -173,8 +173,7 @@ def lower_half_diamond(letter)
   between_space = (0..49).to_a
   alpha_position = (letter.downcase.ord) - 96
   now_between = between_space[alpha_position]
-  letter_range = ('A'..letter).to_a.reverse 
-  p now_between
+  letter_range = ('A'...letter).to_a.reverse 
 
   letter_range.each do |char|
     if char == 'A' 
