@@ -111,7 +111,55 @@
 
 
 
-# 
+# Test the pattern /\s...\s/ against this text:
+
+  str = "Doc in a big red box"
+  str2 = "Hup! 2 3 4"
+  
+  p str.scan(/\s...\s/) # => [" big "]
+  p str2.scan(/\s...\s/)  # => [" 2 3 "]
+
+ # The match is 5 characters long: 
+ 
+  # in str it matches " big " 
+  # in str2 it matches " 2 3 "
+
+# The reason it does not match:
+  # Doc- no leading whitespace
+  # red- leading whitespace consumed by " big "
+  # box- period follows it, not whitespace 
+  # Hup!- no leading whitespace and exclamation point follows 
+
+  # *** Once consumed as part of a match, the character is no longer available for subsequent matches. 
+
+
+
+# Write a regex that matches any four digit hexadecimal number that is both preceded and followed by whitespace. Note that 0x1234 is not a hexadecimal number in this exercise: there is no space before the number 1234. Expect 4 matches. 
+
+str1 = "Hello 4567 bye CDEF - cdef\n"
+str2 = "0x1234 0x5678 0xABCD"
+str3 = "\n1F8A done"
+
+p str1.scan(/\s[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]\s/)
+  # => [" 4567 ", " CDEF ", " cdef\n"]
+
+p str2.scan(/\s\h\h\h\h\s/)
+  # => []
+
+p str3.scan(/\s\h\h\h\h\s/)
+  # => ["\n1F8A "]
+
+
+
+
+# Write a regex that matches any sequence of three letters. expect 7 matches.
+
+str = "The red d0g chases the b1ack cat.
+a_b c_d"
+
+p str.scan(/[a-z][a-z][a-z]/i)
+  # => ["The", "red", "cha", "ses", "the", "ack", "cat"]
+
 
 
 
