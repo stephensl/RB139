@@ -130,4 +130,112 @@
 
 # Word Boundaries
 
+  # \b matches word boundary
+  # \B matches non-word boundary
+
+    # words are sequence of word characters (\w) including (a-z,A-Z,0-9, _)
   
+
+    # Word boundaries occur: 
+      # between any pair of characters, one of which is word char, one is not. 
+      # beginning of string if first char is a word char 
+      # end of string if last char is a word char
+
+    # Non-word boundary:
+      # between any pair of chars, both of which are word or non-word chars
+      # beginning of string if starts with non-word char
+      # end of string if last char is non-word char 
+
+  
+  # Example: 
+
+  str = "Eat some food."
+
+    # word boundaries before the E, s, and f at start of each word, and after the t, e, d at end of words. 
+    # non-word boundaries elsewhere, such as between the o and m in some, or after the . at the end. 
+
+
+  
+  # ---
+
+  # Match 3 letter word consisting of word characters..can use /\b\w\w\w\b/
+
+
+  # \b and \B do not work as word boundaries inside of character classes (between square brackets). 
+  
+  # In fact, \b means something else entirely when inside square brackets: it matches a backspace character.
+
+
+
+
+  # ---
+  # ---
+  # ---
+
+
+
+# Exercises: 
+
+
+# Write a regex that matches the word 'The' when it occurs at the beginning of a line. 
+
+str1 = "The lazy cat sleeps."
+str2 = "The number 623 is not a word."
+str3 = "Then, we went to the movies."
+str4 = "Ah. The bus has arrived."
+
+matched = []
+
+[str1, str2, str3, str4].each do |str|
+  matched << str if str.match(/\AThe\b/)
+end 
+
+p matched # => ["The lazy cat sleeps.", "The number 623 is not a word."]
+
+
+
+
+
+
+# Write a regex that matches the word cat when it occurs at the end of a line. 
+
+  str1 = "The lazy cat sleeps"
+  str2 = "The number 623 is not a cat"
+  str3 = "The Alaskan drives a snowcat"
+
+
+
+  p [str1, str2, str3].select { |str| str.match(/\bcat\z/) }
+
+
+
+
+
+
+#  Write a regex that matches any three-letter word; a word is any string comprised entirely of letters. 
+
+str = "reds and blues"
+str2 = "The lazy cat sleeps."
+str3 = "The number 623 is not a word. Or is it?"
+
+
+p str.scan(/\b[a-z][a-z][a-z]\b/i)  # => ["and"]
+
+p str2.scan(/\b[a-z][a-z][a-z]\b/i) # => ["The", "cat"]
+
+p str3.scan(/\b[a-z][a-z][a-z]\b/i) # => ["The", "not"]
+
+
+
+
+# Write a regex that matches an entire line of text that consists of exactly 3 words as follows:
+
+# The first word is A or The.
+# There is a single space between the first and second words.
+# The second word is any 4-letter word.
+# There is a single space between the second and third words.
+# The third word -- the last word -- is either dog or cat.
+
+
+
+/\A(A|The) [a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z] (dog|cat)\z/
