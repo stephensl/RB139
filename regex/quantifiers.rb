@@ -223,3 +223,55 @@ p str.scan(/^https?:\/\/\S*$/)
 # Write a regex that matches any word that contains at least three occurrences of the letter i. 
 
 /\b([a-z]*i){3,}[a-z]*\b/i
+
+
+
+
+
+
+# Write a regex that matches the last word in each line of text. For this exercise, assume that words are any sequence of non-whitespace characters. Expect 5 matches. 
+
+
+str = "What's up, doc?
+I tawt I taw a putty tat!
+Thufferin' thuccotath!
+Oh my darling, Clementine!
+Camptown ladies sing this song, doo dah."
+
+
+p str.scan(/\S+$/)  
+
+# => ["doc?", "tat!", "thuccotath!", "Clementine!", "dah."]
+
+
+
+
+# Write a regex that matches lines of text that contain at least 3, but no more than 6, consecutive comma separated numbers. 
+
+# You may assume that every number on each line is both preceded by and followed by a comma. 
+
+str = ",123,456,789,123,345,
+,123,456,,789,123,
+,23,56,7,
+,13,45,78,23,45,34,
+,13,45,78,23,45,34,56,"
+
+/^,(\d+,){3,6}$/
+
+
+
+
+# Write a regex that matches lines of text that contain at least 3, but no more than 6, consecutive comma separated numbers. In this exercise, you can assume that the first number on each line is not preceded by a comma, and the last number is not followed by a comma. 
+
+
+str = "123,456,789,123,345
+123,456,,789,123
+23,56,7
+13,45,78,23,45,34
+13,45,78,23,45,34,56"
+
+/^(\d+,){2,5}\d+$/
+
+
+
+
