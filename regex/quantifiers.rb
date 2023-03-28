@@ -275,3 +275,25 @@ str = "123,456,789,123,345
 
 
 
+# Challenge: Write a regex that matches lines of text that contain either 3 comma separated numbers or 6 or more comma separated numbers. 
+
+str = "123,456,789,123,345
+123,456,,789,123
+23,56,7
+13,45,78,23,45,34
+13,45,78,23,45,34,56"
+
+/(^(\d+,){2}\d+$|^(\d+,){5,}\d+$)/
+
+
+
+
+
+# Write a regex that matches HTML h1 header tags, and the content between the opening and closing tags. If multiple header tags appear on one line, your regex should match the opening and closing tags and the text content of the headers, but nothing else. You may assume that there are no nested tags in the text between <h1> and </h1>.
+
+text = "<h1>Main Heading</h1>
+<h1>Another Main Heading</h1>
+<h1>ABC</h1> <p>Paragraph</p> <h1>DEF</h1><p>Done</p>"
+
+
+/<h1>.*?<\/h1>/
