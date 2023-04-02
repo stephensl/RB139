@@ -239,3 +239,6 @@ p str3.scan(/\b[a-z][a-z][a-z]\b/i) # => ["The", "not"]
 
 
 /\A(A|The) [a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z] (dog|cat)\z/
+
+
+T
