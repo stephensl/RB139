@@ -244,3 +244,9 @@ end
 proc = Proc.new { puts 'hello' }
 
 yield_to_explicit_block(&proc)
+
+
+
+& in method invocation vs in method definition as parameter.
+
+vs & in &:to_s
