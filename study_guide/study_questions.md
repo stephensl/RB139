@@ -428,3 +428,86 @@ The argument `"one"` is passed into the block and assigned to block parameter `e
 `["one", "two", "three"]`
 
 The output will be ["one", "two", "three", 4, "five"]. The code demonstrates the binding rules of closures defined within a method and returned from that method. We can see though this example that closures defined within a method will be bound to the artifacts found within the scope of that method. In this case the proc obj is bound to the local variable arr within the method definition. Hence when we call the returned proc object the proc object will push the passed in argument into the array assigned to the local var arr even though the variable arr is out of scope and normally not accessible outside the method definition.
+
+
+TESTING WITH MINITEST
+
+36, What is a test suite?
+
+A test suite is a collection of tests that are executed together in order to test the functionality of a program.
+
+37, What is a test?
+
+A test is a collection of assertions that are executed together in order to test the functionality of a program.
+
+38, What is an assertion?
+
+An assertion is a statement that returns a boolean indicating whether the test passed or failed. Assertions are utilized by comparing an expected value to an actual value provided by the function being tested.
+
+39, What do testing frameworks provide?
+
+Set of tools and utilities for creating and executing tests. They provide a structure for organizing tests and a way to execute tests in a consistent manner. Frameworks include methods for running tests, and tools for reporting test results. 
+
+
+40, What are the differences of Minitest vs RSpec
+
+The main difference is that RSpec uses a Domain Specific Language (DSL) to write tests. Minitest uses Ruby's built in assertion methods. 
+
+41, What is Domain Specific Language (DSL)?
+
+A Domain Specific Language is a language that is designed for a specific purpose unique to a certain environment. RSpec is a DSL that is designed to be used for testing.
+
+42, What is the difference of assertion vs refutation methods?
+
+Assertion methods are asserting that the expected value is equal to the actual value. Refutation methods are asserting that the expected value is not equal to the actual value.
+
+43, How does assert_equal compare its arguments?
+
+It utilizes the `==` method to compare the two arguments. The way in which the `==` is defined in the class determines how the comparison is made. `assert_equal` is used to test value equality, and we must be sure to provide the correct `==` method in order to ensure that the proper comparison is made.
+
+44, What is the SEAT approach and what are its benefits?
+
+The SEAT approach describes the four steps to writing a test. 
+  - Setup necessary objects 
+  - Execute the code against the objects we are testing.
+  - Assert that the expected results occurred.
+  - Tear down any objects that were created during setup.
+
+
+45, When does setup and tear down happen when testing?
+
+It occurs before and after each test is executed.
+
+46, What is code coverage?
+
+The percentage of code that is covered by test suite. Code coverage is based on both public and private functionality.  Code coverage is one metric that can be used to gauge code quality.
+
+47, What is regression testing?
+
+Regression testing is a type of testing that is utilized to ensure that the program functions correctly after a change is made. Testing existing functionality to ensure that no new bugs have been introduced after any changes or additions are made to the code. The goal is to verify that the program still functions as expected after a change is made.
+
+CORE TOOLS
+
+48, What are the purposes of core tools?
+
+The purpose of core tools are to provide a set of tools that are useful for working with Ruby. These tools are used to manage the Ruby environment, manage dependencies, and manage projects. Core tools may include version managers like RVM, or Rbenv, package managers like Bundler, and task automation tools like Rake. These tools help developers streamline their workflow and ensure that their Ruby applications are well-managed and maintained.
+
+49, What are RubyGems and why are they useful?
+
+Gems are small programs that are available to be packaged into a Ruby program. They are used to extend the functionality of a Ruby program. Gems are distributed as packages and are installed using the `gem` command. Gems are managed by RubyGems which is a package manager for Ruby. RubyGems is a tool that is used to manage the installation and uninstallation of gems. By specifying gems required by a project in a Gemfile, Rubygems can automatically download and install the necessary gems and their dependencies. Gems also provide versioning, allowing developer to specify the version of a gem to use in a project, ensuring consistency and compatibility.
+
+50, What are Version Managers and why are they useful?
+
+Ruby version managers allow for the easy installation and switching between different versions of Ruby. Version managers can be useful in setting teh default version of Ruby to use in a project, and allows for flexibility in managing dependencies within the application. Code may also be tested across different versions in order to ensure or debug compatibility issues.
+
+51, What is Bundler and why is it useful?
+
+Bundler is a package manager for Ruby that manages dependencies within a project. It keeps track of which gems are needed for a project, and their version requirements, and ensures that they are installed and available for the project. Bundler keeps track of the gems that are required by a project in a Gemfile. 
+
+52, What is Rake and why is it useful?
+
+Rake is useful in automating certain processes that occur each time a project is run. Commonly used in Ruby projects to automate tasks such as building, testing, and deploying the application. Rake tasks are defined in a Rakefile, and can be executed using the `rake` command. It is useful in automating tasks that are performed frequently, and can be used to streamline the development process.
+
+53, What constitutes a Ruby project?
+
+A Ruby project is a collection of files used to create a Ruby program. A ruby project primarily uses the Ruby language, and may also include files such as a Gemfile, Rakefile, or a README.md file. A ruby project typically contains a set of source code files that define the application's behavior, as well as configuration files, documentation, and test files. 
