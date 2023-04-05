@@ -201,6 +201,12 @@ If we were to initialize the local variable `name` after the closure was created
   - Blocks have a lenient arity and will not raise an error when the number of arguments passed to the block does not match the number of parameters defined in the block.
   - Blocks return a value, just like methods. The return value of the block is the value of the last expression evaluated in the block.
 
+**Additional Notes: Blocks**
+  - A block is *NOT* an object.
+  - A block cannot be returned from a method. 
+  - A `Proc` object is an object that contains a block of code. 
+  - A `lambda` is a special kind of `Proc` object.
+
 ### Use Cases 
   1. When we would like to defer come implementation details to the user of the method.  
 
