@@ -265,9 +265,10 @@ If we were to initialize the local variable `name` after the closure was created
   
   ## Write methods that use blocks and procs
   
+  - 
   
   ## Understand that methods and blocks can return chunks of code (closures)
-  
+  - Methods and blocks can both return closures that may be passed into other methods.
   
   ## Methods with an explicit block parameter
   
