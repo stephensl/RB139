@@ -283,9 +283,26 @@ If we were to initialize the local variable `name` after the closure was created
   
   
   ## Arguments and return values with blocks
+    - Arguments may be passed to closures by passing an argument to `yield` or `call`. 
+    - The return value of the block is the final expression evaluated.
+
+  ### Yielding with an argument 
+    - In order to yield with an argument: 
+    - Add an argument to `yield` statement. 
+      - `yield(argument)`
+    - Define with block with a block parameter.
+      - `{ |block_param| # code }`
+      - Block parameter is also called "block local variable" and scope is constrained to the block. 
+        - Important to use unique name to prevent local variable shadowing. 
   
-  
+  ### Return values
+    - Just as methods should either return a meaningful value or perform some kind of side-effect action (output, mutate), blocks should do the same. 
+    - Return value from block can be captured in local variable, utilized by the method, or ignored depending on implementation details. 
+
+
   ## When can you pass a block to a method
+    If you want to do anything in your method with a block other than execute it with yield, then you really want a Proc. We create a Proc by calling a method with an explicit block parameter (&parameter). Now the block has been converted into an object that can be referenced and passed around. There is really no other way to convert a block to a Proc because the only place that blocks exist are in method invocations.
+
   
   
   ## &:symbol
