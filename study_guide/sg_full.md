@@ -259,24 +259,50 @@ If we were to initialize the local variable `name` after the closure was created
   ## Blocks and variable scope 
   - A block can access any local variable that was in scope when the block was defined, even if that variable is no longer in scope when the block is executed.
   - A block can modify the value of a local variable that was in scope when the block was defined (subject to variable shadowing rules). 
-  
-    
+  - 
   
   
   ## Write methods that use blocks and procs
-  
-  - 
+  - Every method in Ruby takes an implicit block, which is utilized according to method implementation details.
+  - Use `yield` keyword to yield control to the block. 
+  - Blocks may be passed into methods implicitly or explicitly with an explicit block parameter. 
   
   ## Understand that methods and blocks can return chunks of code (closures)
   - Methods and blocks can both return closures that may be passed into other methods.
   
   ## Methods with an explicit block parameter
+  - A block may be passed to a method as an explicit block parameter where the block is treated as a named object. 
+  - May be passed around, reassigned, invoked multiple times, and manipulated in ways unavailable for implicit blocks.
+  - Achieved through converting block argument to proc. 
+
+    - Converting block to Proc
+      - Add parameter prepended with unary `&` as last parameter in method definition.
+      - This saves the block passed to method as a `Proc` object, which can be referenced and passed around as named object.
+      - To reference inside method, call the parameter (variable) without the `&`
+      - To execute the `Proc`, invoke the `Proc#call` method on it. 
   
   
   ## Arguments and return values with blocks
+    - Arguments may be passed to closures by passing an argument to `yield` or `call`. 
+    - The return value of the block is the final expression evaluated.
+
+  ### Yielding with an argument 
+    - In order to yield with an argument: 
+    - Add an argument to `yield` statement. 
+      - `yield(argument)`
+    - Define with block with a block parameter.
+      - `{ |block_param| # code }`
+      - Block parameter is also called "block local variable" and scope is constrained to the block. 
+        - Important to use unique name to prevent local variable shadowing. 
   
-  
+  ### Return values
+    - Just as methods should either return a meaningful value or perform some kind of side-effect action (output, mutate), blocks should do the same. 
+    - Return value from block can be captured in local variable, utilized by the method, or ignored depending on implementation details. 
+
+
   ## When can you pass a block to a method
+    If you want to do anything in your method with a block other than execute it with yield, then you really want a Proc. We create a Proc by calling a method with an explicit block parameter (&parameter). Now the block has been converted into an object that can be referenced and passed around. There is really no other way to convert a block to a Proc because the only place that blocks exist are in method invocations.
+
   
   
   ## &:symbol
