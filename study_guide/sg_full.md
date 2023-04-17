@@ -301,28 +301,94 @@ If we were to initialize the local variable `name` after the closure was created
 
 
   ## When can you pass a block to a method
-    If you want to do anything in your method with a block other than execute it with yield, then you really want a Proc. We create a Proc by calling a method with an explicit block parameter (&parameter). Now the block has been converted into an object that can be referenced and passed around. There is really no other way to convert a block to a Proc because the only place that blocks exist are in method invocations.
+    If you want to do anything in your method with a block other than execute it with `yield`, then you really want a `Proc`. We create a `Proc` by calling a method with an explicit block parameter (`&parameter`). Now the block has been converted into an object that can be referenced and passed around. There is really no other way to convert a block to a `Proc` because the only place that blocks exist are in method invocations.
 
   
   
   ## &:symbol
+    - Using `&:symbol` tells Ruby to convert the `Symbol` to a block. 
+    - If symbol is already a `Proc` then Ruby can easily convert it to a block.
+    - If symbol is not a `Proc`, Ruby will attempt to convert it to a `Proc` by calling `to_proc` on it.
+    - If `to_proc` is not defined, Ruby will raise an error.
+    - Now that it is a `Proc` Ruby can convert it to a block.
+
+    ```ruby 
+    def my_method
+      yield(2)
+    end
+
+    my_method(&:to_s) # => "2"
+    ```
+
+    This is the same as: 
+
+    ```ruby 
+    def my_method
+      yield(2)
+    end
+
+    a_proc = :to_s.to_proc          # explicitly call to_proc on the symbol
+    my_method(&a_proc)              # convert Proc into block, then pass block in. Returns "2"
+    ```
+
+    - `&:to_s` is converted to a block, which is then passed to `my_method`.
+    - `&:to_s` is converted to `{ |num| num.to_s }`
+
+    
   
   ## Arity of blocks and methods
+
+  Arity describes the number of required arguments for a method or block. Blocks and `Proc` objects are demonstrate lenient arity rules, and will not raise an error if the wrong number of arguments are passed to them. If extra arguments are passed to a block or `Proc`, they are ignored. If too few arguments are passed to a block or `Proc`, the missing arguments are set to `nil`. 
+
+  Methods and `lambda`s have strict arity rules, and will raise an error if the wrong number of arguments are passed to them. 
+
 
 
 
 # Testing With Minitest
 
+MiniTest is a testing framework that is included in the Ruby standard library. It is a bundled gem shipped with default Ruby installation. We use it primarily for regression testing, which is testing that our code still works after making changes to it.
+
+
   ## Testing terminology
+
+  Test suite: A collection of tests that are grouped together and run together. Test suite includes all tests for a particular project. 
+
+  Test: A certain situation or context in which tests are run. A test may contain one or more assertions.
+
+  Assertion: Actual verification step to confirm that the data returned by the code under test is what we expect.
 
 
   ## Minitest vs. RSpec
 
+  Minitest allows us to write tests that look like Ruby code, while RSpec uses a domain-specific language (DSL) that is more verbose and less readable.
+
+  Minitest is included in the Ruby standard library, while RSpec is a gem that must be installed.
+
 
   ## SEAT approach
 
+  - Setup: Prepare the test environment by creating objects and setting up data.
+  - Exercise: Execute the code under test.
+  - Assert: Verify that the code under test behaves as expected.
+  - Teardown: Clean up the test environment by removing objects and data.
+
+  The SEAT approach is commonly used in testing, and is the basis for the Minitest framework.
+
 
   ## Assertions
+
+  Assertions are the verification steps that confirm that the code under test behaves as expected. Minitest provides a number of assertions that we can use to test our code. Common assertions include:
+    - `assert_equal` - Asserts that the expected value is equal to the actual value.
+    - `assert_nil` - Asserts that the value is `nil`.
+    - `assert_includes` - Asserts that the collection includes the specified value.
+    - `assert_raises` - Asserts that the specified error is raised.
+    - `assert_instance_of` - Asserts that the object is an instance of the specified class.
+    - `assert_same` - Asserts that the two objects are the same object.
+    - `assert_output` - Asserts that the specified output is printed to `STDOUT` or `STDERR`.
+    - `assert` - Asserts that the expression is truthy.
+    - `refute` - Asserts that the expression is falsey.
+    - `assert_match` - Asserts that the pattern matches the string. 
 
 
 
