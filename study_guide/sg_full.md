@@ -378,7 +378,9 @@ MiniTest is a testing framework that is included in the Ruby standard library. I
 
   ## Assertions
 
-  Assertions are the verification steps that confirm that the code under test behaves as expected. Minitest provides a number of assertions that we can use to test our code. Common assertions include:
+  Assertions are the verification steps that confirm that the code under test behaves as expected. Minitest provides a number of assertions that we can use to test our code. 
+  
+  Common assertions include:
     - `assert_equal` - Asserts that the expected value is equal to the actual value.
     - `assert_nil` - Asserts that the value is `nil`.
     - `assert_includes` - Asserts that the collection includes the specified value.
@@ -391,18 +393,69 @@ MiniTest is a testing framework that is included in the Ruby standard library. I
     - `assert_match` - Asserts that the pattern matches the string. 
 
 
-
 # Core Tools/Packaging Code
+  Besides the `ruby` command, A Ruby installation contains: 
+  - Core library 
+  - Standard library (`require`)
+  - `irb` REPL (Read Evaluate Print Loop)
+  - `rake` utility
+  - `gem` command 
+  - Documentation tools (`rdoc` and `ri`)
 
   ## Purpose of core tools
-  
+  - Rubygems
+    - Packages of code that can be downloaded and installed for use in Ruby programs or from command line.
+    - `pry`, `rubocop`, `rails`, etc. 
+  - Ruby Version Managers
+    - Programs allowing for installation, management, and use of multiple Ruby versions. 
+    - RVM, Rbenv
+  - Bundler 
+    - Dependency manager Gem 
+    - Allows configuration of which Ruby and Gems project needs. 
+    - To use Bundler, you provide a file named `Gemfile` that describes the Ruby and Gem versions you want for your app. 
+    - Bundler uses the `Gemfile` to generate a `Gemfile.lock` file via the `bundle install` command.
+    - The `bundle exec` command ensures that executable programs installed by Gems don't interfere with your app's requirements. For instance, if your app needs a specific version of rake but the default version of rake differs, bundle exec ensures that you can still run the specific rake version compatible with your app.
+    - Assists in distributing project to run on other systems. 
+  - Rake 
+    - Used to automate anything you may want to do with your application during the development, testing, and release cycles.
+    - Uses: 
+      - Set up required environment
+      - Set up and initialize databases
+      - Run tests
+      - Install the app.. etc
+    - Uses a `Rakefile` in project directory. 
+
   
   ## Gemfiles
+    - Bundler utilizes `Gemfiles` to keep track of dependencies required for project. 
+    - When we run `bundle install` Bundler will scan, download, and install all dependencies listed in `Gemfile` create a `Gemfile.lock` which shows all dependencies for the program. 
+      - Includes all gems listed in `Gemfile` as well as any Gems that they depend on. 
 
+
+
+  ## Core Tools Relationships
+  - Ruby version manager
+    - Top level, controls multiple installations of Ruby and all other tools. 
+  - Gems
+    - Each installation of Ruby can have multiple Gems.
+    - Each Gem install may have multiple versions. 
+  - Ruby Projects
+    - Programs/libraries that make use of Ruby as primary development language.
+    - Each Ruby project typically designed to use specific Ruby versions/gems.
+  - Bundler
+    - A Gem used to manage the Gem dependencies in the project. 
+    - Determines and controls the Ruby version and Gems that project uses, and attempts to ensure that proper items are installed and used when program is run. 
+  - Rake 
+    - Gem that is not tied to any one Ruby project.
+    - Tool to automate repetitive development tasks such as running tests, building databases, packaging and releasing software, etc. 
+    - Use `Rakefile` to control which tasks your project needs. 
+
+- The `.gemspec` file provides information about a Gem. If you decide to release a program or library as a Gem, you must include a `.gemspec` file. 
 
 
 
 # Regular Expressions
+  
 
 
 
