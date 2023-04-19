@@ -250,3 +250,55 @@ yield_to_explicit_block(&proc)
 & in method invocation vs in method definition as parameter.
 
 vs & in &:to_s
+
+
+
+
+
+
+def yielder(a_proc)
+  yield(a_proc)
+  a_proc.call 
+end 
+
+my_proc = Proc.new { puts "Hello World!"}
+
+yielder(my_proc) { |proco| puts "#{proco.call} and goodnight" } 
+
+# #<Proc:0x00000001063993b8 sand.rb:18>
+# Hello World!
+
+
+# To summarize, the & operator in the method parameter is used to provide a handle to the block within the method, represented as a Proc object. The yield keyword executes the block directly, not the Proc object. The block is still accessible within the method's scope even if it has been bound to a Proc object through the explicit block parameter.
+
+
+
+# def method_a
+#   Proc.new { |x| x + 2 }
+# end 
+
+# def map(arr)
+#   fresh_arr = []
+
+#   arr.each do |num|
+#     ret_val = yield(num) if block_given?
+#     fresh_arr << ret_val 
+#   end 
+
+#   fresh_arr 
+# end 
+
+# p map([1,2,3], &method_a)
+
+# The & prepended to method_a, Ruby will convert the Proc object returned by method_a to a block, and then pass it in as an argument to the map method. If so, the Proc is passed into the method to be executed according to method implementation. If the reference following the & is NOT already a Proc object, Ruby will attempt to call #to_proc on it in order to convert it to a Proc. 
+
+# If the object has a to_proc method defined for its class, the object will be converted to a Proc and passed into the method. If the object's class does not implement a to_proc method, an error will be thrown for MethodError: to_proc
+
+# When using yield, you cannot directly access the block as an object, which can limit some flexibility compared to using the &block parameter.
+
+# Handle to reference and manipulate the block object within the method. This approach can offer greater flexibility compared to using yield. Some benefits and use cases of having a handle to the block object include:
+
+#     You can call the block multiple times within the method, if needed, which might not be semantically clear when using yield multiple times.
+#     You can pass the block as an argument to another method or function.
+#     You can store the block for later use, for example, in a data structure or instance variable.
+#     You can inspect the block's properties, like its arity (number of arguments it takes) using the block.arity method.
