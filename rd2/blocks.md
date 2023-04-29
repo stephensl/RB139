@@ -352,3 +352,4 @@
 
 
 # Arity of blocks and methods
+  - Lenient for blocks and strict for methods.
