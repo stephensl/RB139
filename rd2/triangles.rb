@@ -34,13 +34,10 @@ class Triangle
     true 
   end 
 
-  def kind_of_tri
+  def kind
     return "equilateral" if sides.all? { |side| side == sides[0] }
     return "isosceles" if sides.uniq.size == 2 
     return "scalene" if sides.uniq.size == 3
   end 
 end 
 
-mine = Triangle.new(3, 3, 5) 
-p mine.valid_triangle?
-p mine.kind_of_tri
