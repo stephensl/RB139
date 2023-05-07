@@ -68,7 +68,7 @@ Blocks have a return value, and can mutate the argument with a destructive call.
 
   - Defer some implementation code to method invocation time. 
     - Provides flexibility for method user to refine behavior of the method according to use case without making any changes to the method implementation. 
-    - Offers increased utility through generic behavior that may be specialized at invocation time based on the block. 
+    - Offers increased utility through generic behavior that may be specialized at invocation time via the block. 
 
   - Sandwich code: before and after
     - Perform before action, yield to block, perform after action.
@@ -142,8 +142,7 @@ Closures are implemented in Ruby through:
 - Flexibility to pass closures around as objects and reuse them in different contexts.
 - Ability to create generic methods that can be specialized at invocation time through the use of blocks.
 - Ability to sandwich code before and after a block of code, which can be useful in timing, logging, notification systems, and resource management.
-- Increased DRYness and modularity of code.   
-
+- Increased Code reusability and easier to maintain. 
 
 ### Binding 
 
@@ -195,7 +194,7 @@ If we were to initialize the local variable `name` after the closure was created
 **Definition**  
   - A block in Ruby is a chunk of code that can be defined using either curly braces {} or the do...end keywords. 
   - Blocks can be passed as arguments to methods, and are executed within the context of the method using the yield keyword. 
-  - Blocks can also be assigned to variables using the Proc.new method or the & operator, in which case they become proc objects. 
+  - Blocks can also be assigned to variables using the `Proc.new` method or the `&` operator, in which case they are converted to proc objects. 
   - Unlike procs and lambdas, blocks are not objects in Ruby and cannot be returned from methods.
   - Every method in Ruby can accept an implicit block, and the way in which the block is handled depends on the method implementation.
   - Blocks have a lenient arity and will not raise an error when the number of arguments passed to the block does not match the number of parameters defined in the block.
@@ -257,7 +256,7 @@ If we were to initialize the local variable `name` after the closure was created
   ```
 
   ## Blocks and variable scope 
-  - A block can access any local variable that was in scope when the block was defined, even if that variable is no longer in scope when the block is executed.
+  - A block can access local variables that were in scope when the block was defined, even if that variable is no longer in scope when the block is executed.
   - A block can modify the value of a local variable that was in scope when the block was defined (subject to variable shadowing rules). 
   - 
   
@@ -265,7 +264,7 @@ If we were to initialize the local variable `name` after the closure was created
   ## Write methods that use blocks and procs
   - Every method in Ruby takes an implicit block, which is utilized according to method implementation details.
   - Use `yield` keyword to yield control to the block. 
-  - Blocks may be passed into methods implicitly or explicitly with an explicit block parameter. 
+  - Blocks may be passed into methods implicitly or explicitly using explicit block parameter by prepending `&` to the final method parameter. 
   
   ## Understand that methods and blocks can return chunks of code (closures)
   - Methods and blocks can both return closures that may be passed into other methods.
