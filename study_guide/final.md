@@ -11,6 +11,7 @@
 
   - Binding refers to the surrounding artifacts (variables, methods, constants) that are in-scope when the closure is created and 'bound' to the closure. This allows the closure to maintain its connection to surrounding data that may be exposed or manipulated as the closure is passed around and executed within the program. A closure's binding offers increased flexibility to access particular functionality from areas within the program that would otherwise be limited by scoping rules. 
 
+
   ### Scope
   - Closures keeps track of all information needed in order to execute correctly later.
     - local variables
@@ -49,7 +50,7 @@
 
   - The `yield` keyword is utilized in order to execute the block. 
 
-  - Blocks have a return value, and can mutate the argument with a destructive call.
+  
 
 
 
